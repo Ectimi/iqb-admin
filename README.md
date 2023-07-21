@@ -4,7 +4,7 @@
 
 ### 技术栈
 
-[react](https://reactjs.org) + [typescript](https://www.typescriptlang.org/) + [antd](https://ant.design/index-cn) + [axios](https://www.axios-http.cn/)
+[react](https://reactjs.org) + [react-router](https://reactrouter.com/en/main) + [typescript](https://www.typescriptlang.org/) + [antd](https://ant.design/index-cn) + [axios](https://www.axios-http.cn/) + [ahook](https://ahooks.js.org/zh-CN) + [zustand](https://github.com/pmndrs/zustand)
 
 ### 项目规范
 
