@@ -1,0 +1,9 @@
+{
+  "questionManager": "questionManager",
+  "questionCreate": "questionCreate",
+  "questionList": "questionList",
+  "userAndPermissionManger": "userAndPermissionManger",
+  "userManager": "userManager",
+  "userList": "userList",
+  "permissionManager": "permissionManager"
+}

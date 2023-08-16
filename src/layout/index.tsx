@@ -1,11 +1,11 @@
-import { NavLink } from 'react-router-dom'
-import { useSafeState } from 'ahooks'
-import { theme, Menu, type MenuProps, Typography, Space, Dropdown, Avatar } from 'antd'
-import { FileTextOutlined, UserOutlined, TranslationOutlined } from '@ant-design/icons'
-import './index.less'
 import { PropsWithChildren } from 'react'
+import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { Menu, type MenuProps, Typography, Space, Dropdown, Avatar } from 'antd'
+import { FileTextOutlined, UserOutlined } from '@ant-design/icons'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import './index.less'
 
-const { useToken } = theme
 const { Title } = Typography
 
 type MenuItem = Required<MenuProps>['items'][number]
@@ -25,19 +25,6 @@ const getItem = (
     type
   } as MenuItem)
 
-const items: MenuProps['items'] = [
-  getItem('题目管理', 'question', <FileTextOutlined rev={null} />, [
-    getItem(<NavLink to='/question'>题目列表</NavLink>, 'q1', null),
-    getItem(<NavLink to='/question/create'>创建题目</NavLink>, 'q2', null),
-    getItem(<NavLink to='/question/manager'>题目管理</NavLink>, 'q3', null)
-  ]),
-  getItem('用户/权限管理', 'user', <UserOutlined rev={null} />, [
-    getItem(<NavLink to='/user'>用户列表</NavLink>, 'u1', null),
-    getItem(<NavLink to='/user/manager'>用户管理</NavLink>, 'u2', null),
-    getItem(<NavLink to='/user/permission'>权限管理</NavLink>, 'u3', null)
-  ])
-]
-
 const accountDropdownItems: MenuProps['items'] = [
   {
     key: '1',
@@ -52,16 +39,32 @@ const accountDropdownItems: MenuProps['items'] = [
   }
 ]
 
-const languages = ['cn 中文简体', 'en English']
+const SideMenu = () => {
+  const { t } = useTranslation()
+  const items: MenuProps['items'] = [
+    getItem(t('questionManager'), 'question', <FileTextOutlined rev={null} />, [
+      getItem(<NavLink to='/question'>{t('questionList')}</NavLink>, 'q1', null),
+      getItem(<NavLink to='/question/create'>{t('questionCreate')}</NavLink>, 'q2', null),
+      getItem(<NavLink to='/question/manager'>{t('questionManager')}</NavLink>, 'q3', null)
+    ]),
+    getItem(t('userOrPermissionManager'), 'user', <UserOutlined rev={null} />, [
+      getItem(<NavLink to='/user'>{t('userList')}</NavLink>, 'u1', null),
+      getItem(<NavLink to='/user/manager'>{t('userManager')}</NavLink>, 'u2', null),
+      getItem(<NavLink to='/user/permission'>{t('permissionManager')}</NavLink>, 'u3', null)
+    ])
+  ]
+  return (
+    <Menu
+      style={{ width: 256 }}
+      defaultSelectedKeys={['q1']}
+      defaultOpenKeys={['question', 'user']}
+      mode='inline'
+      items={items}
+    />
+  )
+}
 
 export default function AppLayout(props: PropsWithChildren<any>) {
-  const { token } = useToken()
-
-  const onClick: MenuProps['onClick'] = e => {
-    console.log('click ', e)
-  }
-  const [language, setLanguage] = useSafeState(languages[0])
-
   return (
     <div className='layout-box'>
       <div className='header'>
@@ -73,36 +76,11 @@ export default function AppLayout(props: PropsWithChildren<any>) {
               <span>username</span>
             </div>
           </Dropdown>
-          <Dropdown
-            menu={{
-              items: languages.map(name => ({
-                key: name,
-                label: (
-                  <div
-                    style={{
-                      color: language === name ? token.colorPrimaryText : '#000'
-                    }}
-                    onClick={() => setLanguage(name)}
-                  >
-                    {name}
-                  </div>
-                )
-              }))
-            }}
-          >
-            <TranslationOutlined rev={null} />
-          </Dropdown>
+          <LanguageSwitcher />
         </Space>
       </div>
       <section className='section'>
-        <Menu
-          onClick={onClick}
-          style={{ width: 256 }}
-          defaultSelectedKeys={['q1']}
-          defaultOpenKeys={['question', 'user']}
-          mode='inline'
-          items={items}
-        />
+        <SideMenu />
         <div className='content'>{props.children}</div>
       </section>
     </div>
