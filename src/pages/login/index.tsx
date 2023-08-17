@@ -9,6 +9,8 @@ import { useEffect } from 'react'
 import storage from '@/lib/storage'
 import logo from '@/assets/images/logo.png'
 import './index.less'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
 
 const enum LoginType {
   password = 'password',
@@ -24,6 +26,7 @@ interface FormData {
 }
 
 const SendCodeButton = (props: { sendCode: () => void; emialValidate: boolean }) => {
+  const { t } = useTranslation()
   const { count, isCounting, startCountDown } = useCountDown(3)
   const [disabled, setDisabled] = useSafeState(false)
   const onClick = async () => {
@@ -36,12 +39,13 @@ const SendCodeButton = (props: { sendCode: () => void; emialValidate: boolean })
 
   return (
     <Button className='form-send' size='large' disabled={disabled} onClick={onClick}>
-      {isCounting ? `${count}s后可重发` : '获取验证码'}
+      {isCounting ? t('重发倒计时', { count }) : t('获取验证码')}
     </Button>
   )
 }
 
 export default function Login() {
+  const { t } = useTranslation()
   const [form] = Form.useForm()
   const navigate = useNavigate()
   const { isLogin, setToken } = useAuth()
@@ -58,7 +62,7 @@ export default function Login() {
     const res = await UserLogin({ type: loginType, ...params }).catch(err => {
       console.log('login err==>', err)
     })
-    storage.setItem('refresh_token', res!.data.refreshToken.split(' '))
+    storage.setItem('refresh_token', res!.data.refreshToken.split(' ')[1])
     setToken(res!.data.accessToken.split(' ')[1])
   }
   const sendCode = async () => {
@@ -76,6 +80,9 @@ export default function Login() {
 
   return (
     <div className='router-page login-page'>
+      <div className='language'>
+        <LanguageSwitcher />
+      </div>
       <div className='form'>
         <div className='form-header'>
           <img className='form-logo' src={logo} alt='logo image' />
@@ -92,8 +99,8 @@ export default function Login() {
             activeKey={loginType}
             centered
             items={[
-              { label: '密码登录', key: LoginType.password },
-              { label: '邮箱登录', key: LoginType.code }
+              { label: t('账号登录'), key: LoginType.password },
+              { label: t('邮箱登录'), key: LoginType.code }
             ]}
             onChange={key => onTabChange(key as LoginType)}
           />
@@ -101,23 +108,23 @@ export default function Login() {
             <>
               <Form.Item
                 name='username'
-                rules={[{ required: true, message: '请输入用户名或邮箱！' }]}
+                rules={[{ required: true, message: t('用户名验证.必须') }]}
               >
                 <Input
                   prefix={<UserOutlined rev={null} />}
-                  placeholder='请输入用户名或邮箱'
+                  placeholder={t('账号Placeholder')}
                   autoComplete='off'
                   size='large'
                 />
               </Form.Item>
               <Form.Item
                 name='password'
-                rules={[{ required: true, message: '请输入密码！' }]}
+                rules={[{ required: true, message: t('密码验证.必须') }]}
                 hasFeedback
               >
                 <Input.Password
                   prefix={<LockOutlined rev={null} />}
-                  placeholder='请输入密码'
+                  placeholder={t('密码Placeholder')}
                   size='large'
                 />
               </Form.Item>
@@ -129,30 +136,30 @@ export default function Login() {
                 rules={[
                   {
                     type: 'email',
-                    message: 'The input is not valid E-mail!'
+                    message: t('邮箱验证.是否有效')
                   },
                   {
                     required: true,
-                    message: 'Please input your E-mail!'
+                    message: t('邮箱验证.必须')
                   }
                 ]}
               >
                 <Input
                   prefix={<InboxOutlined rev={null} />}
-                  placeholder='请输入邮箱'
+                  placeholder={t('邮箱Placeholder')}
                   size='large'
                 />
               </Form.Item>
-              <Form.Item>
+              <Form.Item style={{ marginBottom: 0 }}>
                 <Space align='start'>
                   <Form.Item
                     style={{ marginBottom: 0 }}
                     name='captcha'
-                    rules={[{ required: true, message: '请输入验证码！' }]}
+                    rules={[{ required: true, message: t('验证码验证.必须') }]}
                   >
                     <Input
                       prefix={<LockOutlined rev={null} />}
-                      placeholder='请输入验证码！'
+                      placeholder={t('验证码Placeholder')}
                       size='large'
                     />
                   </Form.Item>
@@ -173,11 +180,11 @@ export default function Login() {
 
           <Form.Item>
             <Form.Item name='remember' valuePropName='checked' noStyle>
-              <Checkbox>记住我</Checkbox>
+              <Checkbox>{t('记住我')}</Checkbox>
             </Form.Item>
 
             <a className='form-forget' href=''>
-              忘记密码
+              {t('忘记密码')}
             </a>
           </Form.Item>
 
@@ -199,7 +206,7 @@ export default function Login() {
                       form.getFieldError('captcha').length > 0
                 }
               >
-                登录
+                {t('登录')}
               </Button>
             )}
           </Form.Item>

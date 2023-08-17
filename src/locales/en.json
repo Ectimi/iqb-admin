@@ -1,9 +1,35 @@
 {
-  "questionManager": "questionManager",
-  "questionCreate": "questionCreate",
-  "questionList": "questionList",
-  "userAndPermissionManger": "userAndPermissionManger",
-  "userManager": "userManager",
-  "userList": "userList",
-  "permissionManager": "permissionManager"
+  "账号登录": "Account Login",
+  "邮箱登录": "Email Login",
+  "账号Placeholder": "Please input username or email",
+  "密码Placeholder": "Please input password",
+  "邮箱Placeholder": "Please input email",
+  "验证码Placeholder": "Please input captcha",
+  "获取验证码": "Get Captcha",
+  "记住我": "Remember Me",
+  "忘记密码": "Forgot Password",
+  "登录": "Login",
+  "重发倒计时": "After {{count}}s can resend",
+  "用户名验证": {
+    "必须": "Please input username or email!"
+  },
+  "密码验证": {
+    "必须": "Please input password!"
+  },
+  "邮箱验证": {
+    "必须": "Please input email!",
+    "是否有效": "The input is not valid E-mail!"
+  },
+  "验证码验证": {
+    "必须": "Please input captcha!"
+  },
+  "个人设置": "Personal Setting",
+  "退出登录": "Logout",
+  "题目管理": "Question Manager",
+  "创建题目": "Question Create",
+  "题目列表": "Question List",
+  "用户/权限管理": "User Permission Manger",
+  "用户管理": "User Manager",
+  "用户列表": "User List",
+  "权限管理": "Permission Manager"
 }

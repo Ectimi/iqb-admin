@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import { Alert } from 'antd'
 import '@/assets/styles/reset.css'
+import '@/assets/styles/rewrite.less'
 import '@/assets/styles/global.less'
 
 const { ErrorBoundary } = Alert

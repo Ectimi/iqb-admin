@@ -1,6 +1,7 @@
 import { TranslationOutlined } from '@ant-design/icons'
 import { Dropdown, theme } from 'antd'
 import { useTranslation } from 'react-i18next'
+
 const { useToken } = theme
 const languages = ['zh 中文简体', 'en English']
 
@@ -26,7 +27,7 @@ export default function LanguageSwitcher() {
         }))
       }}
     >
-      <TranslationOutlined rev={null} />
+      <TranslationOutlined rev={null} style={{ fontSize: 20 }} />
     </Dropdown>
   )
 }

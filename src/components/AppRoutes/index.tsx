@@ -1,4 +1,4 @@
-import { useLocation, Outlet } from 'react-router-dom'
+import { useLocation, useOutlet } from 'react-router-dom'
 import { SwitchTransition } from 'react-transition-group'
 import CSSTransition from '@/components/CSSTransition'
 import { RouteItem } from '@/routes'
@@ -10,6 +10,7 @@ type Props = {
 
 export default function AppRoutes(props: Props) {
   const location = useLocation()
+  const currentOutlet = useOutlet()
   const { nodeRef } = props.routes.find(route => route.path === location.pathname) ?? {}
 
   return (
@@ -23,7 +24,7 @@ export default function AppRoutes(props: Props) {
           unmountOnExit
         >
           <div ref={nodeRef} style={{ width: '100%', height: '100%' }}>
-            <Outlet />
+            {currentOutlet}
           </div>
         </CSSTransition>
       </SwitchTransition>
