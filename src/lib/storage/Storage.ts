@@ -3,8 +3,9 @@ import { encrypt, decrypt } from './crypto'
 interface IConfig {
   type?: 'localStorage' | 'sessionStorage'
   prefix?: string
-  expire?: number
   isEncrypt?: boolean
+  expire?: number | null
+  addDefaultExpire?: boolean
 }
 
 type TKey = string
@@ -12,9 +13,10 @@ type TKey = string
 export class IStroage {
   private defaultConfig: IConfig = {
     type: 'localStorage', // 本地存储类型 sessionStorage
-    prefix: 'IQB_1.0.0', // 名称前缀 建议：项目名 + 项目版本
-    expire: 60 * 60 * 24 * 30, //过期时间 单位：秒
-    isEncrypt: true // 默认加密 为了调试方便, 开发过程中可以不加密
+    prefix: '', // 名称前缀 建议：项目名 + 项目版本
+    addDefaultExpire: true, //是否默认添加过期时间，若设置为false，即默认不会过期
+    expire: 60 * 60 * 24 * 30, //默认过期时间为一个月
+    isEncrypt: true // 默认加密 为了调试方便, 开发过程中可以不加密,
   }
 
   config: IConfig
@@ -25,18 +27,21 @@ export class IStroage {
     this.originalStorage = window[this.config.type!]
   }
 
-  setItem = (key: TKey, value: any, expire = 0) => {
+  setItem = (key: TKey, value: any, expire: number | null = null) => {
     if (value === '' || value === null || value === undefined) {
       value = null
     }
 
-    if (isNaN(expire) || expire < 0) throw new Error('Expire must be a number')
+    expire =
+      expire === null ? (this.config.addDefaultExpire ? this.config.expire! : expire) : expire
 
-    expire = expire ? expire : this.config.expire!
+    if (typeof expire === 'number' && expire < 0)
+      throw new Error('Expire must be greater than or equal to 0')
+
     const data = {
       value: value, // 存储值
       time: Date.now(), //存值时间戳
-      expire: expire // 过期时间
+      expire: expire === null ? null : Date.now() + expire // 过期时间
     }
 
     const encryptString = this.config.isEncrypt
@@ -61,10 +66,8 @@ export class IStroage {
       ? JSON.parse(decrypt(this.originalStorage.getItem(key)))
       : JSON.parse(this.originalStorage.getItem(key)!)
 
-    const nowTime = Date.now()
-
     // 过期删除
-    if (storage.expire && this.config.expire! < nowTime - storage.time) {
+    if (storage.expire && storage.expire < Date.now()) {
       this.removeItem(key)
       return null
     } else {
@@ -75,7 +78,8 @@ export class IStroage {
   }
 
   removeItem = (key: TKey) => {
-    this.originalStorage.removeItem(this.autoAddPrefix(key))
+    key = key.startsWith(this.config.prefix!) ? key : this.autoAddPrefix(key)
+    this.originalStorage.removeItem(key)
   }
 
   clear = () => {
