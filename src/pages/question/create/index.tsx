@@ -19,6 +19,9 @@ export enum EQuestionType {
 function handleDetailChange({ html, text }: any) {
   console.log('handleDetailChange', html, text)
 }
+function handleAnswerChange({ html, text }: any) {
+  console.log('handleDetailChange', html, text)
+}
 
 export default function QuestionCreate() {
   const initialValues = {
@@ -102,6 +105,13 @@ export default function QuestionCreate() {
                   </Form.Item>
                 ) : null
               }
+            </Form.Item>
+            <Form.Item
+              name='description'
+              label='答案描述'
+              rules={[{ required: true, message: '请输入答案描述！' }]}
+            >
+              <MdEditor renderHTML={text => mdParser.render(text)} onChange={handleAnswerChange} />
             </Form.Item>
             <Form.Item>
               <Button type='primary' htmlType='submit'>
